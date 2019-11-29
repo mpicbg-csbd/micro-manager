@@ -759,6 +759,42 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       return savePanel_;
    }
 
+   CheckBoxPanel clijPanel_;
+   JLabel clijRootLabel_;
+   JTextField clijRootField_;
+   JButton browseClijRootButton_;
+   private CheckBoxPanel createCLIJPanel() {
+      clijPanel_ = createCheckBoxPanel("CLIJ Postprocessing");
+      clijPanel_.setLayout(new MigLayout(PANEL_CONSTRAINT,
+              "[][grow, fill][]", "[][][]"));
+
+      clijRootLabel_ = new JLabel("Directory root:");
+      clijRootLabel_.setFont(DEFAULT_FONT);
+      clijPanel_.add(rootLabel_, "alignx label");
+
+      clijRootField_ = new JTextField();
+      clijRootField_.setFont(DEFAULT_FONT);
+      clijPanel_.add(rootField_);
+
+      browseClijRootButton_ = new JButton("...");
+      browseClijRootButton_.setToolTipText("Browse");
+      browseClijRootButton_.setMargin(new Insets(2, 5, 2, 5));
+      browseClijRootButton_.setFont(new Font("Dialog", Font.PLAIN, 10));
+      browseClijRootButton_.addActionListener((final ActionEvent e) -> {
+         setRootDirectory();
+      });
+      clijPanel_.add(browseClijRootButton_, "wrap");
+
+
+
+      clijPanel_.addActionListener((final ActionEvent e) -> {
+         applySettings();
+      });
+
+
+      return clijPanel_;
+   }
+
    private JPanel createCommentsPanel() {
       commentsPanel_ = createLabelPanel("Acquisition Comments");
       commentsPanel_.setLayout(new MigLayout(PANEL_CONSTRAINT,
@@ -880,6 +916,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       super.add(topPanel, "grow");
       super.add(createChannelsPanel(), "grow");
       super.add(createSavePanel(), "growx");
+      super.add(createCLIJPanel(), "growx");
       super.add(createCommentsPanel(), "growx");
 
 
@@ -1291,6 +1328,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
               FileDialogs.MM_DATA_SET);
       if (result != null) {
          rootField_.setText(result.getAbsolutePath().trim());
+         clijRootField_.setText(result.getAbsolutePath().trim());
          acqEng_.setRootName(result.getAbsolutePath().trim());
       }
    }

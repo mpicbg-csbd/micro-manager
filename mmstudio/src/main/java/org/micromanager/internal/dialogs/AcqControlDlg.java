@@ -37,6 +37,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.*;
 import mmcorej.CMMCore;
+import net.haesleinhuepf.clij.mm.CLIJMM;
 import net.miginfocom.swing.MigLayout;
 import org.micromanager.Studio;
 import org.micromanager.UserProfile;
@@ -774,7 +775,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
 
       clijRootField_ = new JTextField();
       clijRootField_.setFont(DEFAULT_FONT);
-      clijPanel_.add(rootField_);
+      clijPanel_.add(clijRootField_);
 
       browseClijRootButton_ = new JButton("...");
       browseClijRootButton_.setToolTipText("Browse");
@@ -870,6 +871,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
          }
       });
       acqEng_ = acqEng;
+      CLIJMM.getInstance().setAcquisitionEngine(acqEng_);
       acqEng.addSettingsListener(this);
 
       super.setTitle("Multi-Dimensional Acquisition");
@@ -1595,6 +1597,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
                return null;
             }
          }
+         CLIJMM.getInstance().reset();
          return acqEng_.acquire();
       } catch (MMException | RuntimeException e) {
          acqEng_.shutdown();

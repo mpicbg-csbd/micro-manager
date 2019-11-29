@@ -34,6 +34,9 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.Timer;
+
+import ij.IJ;
+import net.haesleinhuepf.clij.mm.CLIJMM;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -443,6 +446,9 @@ public final class MMAcquisition extends DataViewerListener {
    public void onNewImage(DataProviderHasNewImageEvent event) {
       imagesReceived_++;
       setProgressText();
+      IJ.log("event: " + event);
+      CLIJMM.getInstance().setAcquisition(this);
+      CLIJMM.getInstance().imageArrived(event.getDataProvider());
    }
    
    @Subscribe

@@ -560,6 +560,10 @@ public final class AcquisitionWrapperEngine implements AcquisitionEngine {
       return sliceZBottomUm_;
    }
 
+   public double getSliceZTopUm() {
+      return sliceZTopUm_;
+   }
+
    @Override
    public void setChannel(int row, ChannelSpec channel) {
       channels_.set(row, channel);
@@ -745,6 +749,10 @@ public final class AcquisitionWrapperEngine implements AcquisitionEngine {
    @Override
    public void setDirName(String text) {
       dirName_ = text;
+   }
+
+   public String getDirName() {
+      return dirName_;
    }
 
    @Override

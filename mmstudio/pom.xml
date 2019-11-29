@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>24.2.0</version>
+		<relativePath />
+	</parent>
+
+	<groupId>de.mpicbg</groupId>
+	<artifactId>MMJ_</artifactId>
+	<version>0</version>
+
+	<name>MMJ_</name>
+	<description>A Maven project implementing an ImageJ command for counting cells.</description>
+	<url>http://myerslab.mpi-cbg.de/robert-haase</url>
+	<inceptionYear>2019</inceptionYear>
+	<organization>
+		<name>MPI-CBG</name>
+		<url>http://www.mpi-cbg.de/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>haesleinhuepf</id>
+			<name>Robert Haase</name>
+			<url>http://haesleinhuepf.net</url>
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>none</name>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>Image.sc Forum</name>
+			<archive>https://forum.image.sc/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/haesleinhuepf/NEUBIAS_TS11</connection>
+		<developerConnection>scm:git:git@github.com:haesleinhuepf/NEUBIAS_TS11</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/haesleinhuepf/NEUBIAS_TS11</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/haesleinhuepf/NEUBIAS_TS11/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+
+	<properties>
+		<package-name>de.mpicbg</package-name>
+		<main-class>de.mpicbg.imagej.CellCountingWorkflow</main-class>
+		<license.licenseName>bsd_3</license.licenseName>
+		<license.copyrightOwners>Robert Haase</license.copyrightOwners>
+		<imagej.app.directory>C:/programs/fiji-win64/Fiji.app/</imagej.app.directory>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>clij</id>
+			<url>http://dl.bintray.com/haesleinhuepf/clij</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<artifactId>.MMCoreJ.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/MMCoreJ.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.MMAcqEngine.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/MMAcqEngine.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.MM2MacroExtensions_.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/MM2MacroExtensions_.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.guava.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/guava-17.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.gson.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/gson-2.2.4.jar</systemPath>
+		</dependency>
+
+
+		<dependency>
+			<artifactId>.iconloader-GIT.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/iconloader-GIT.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<artifactId>.boofcv-types.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/boofcv-types-0.33.1.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<artifactId>.georegression.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/georegression-0.19.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.bsh.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/bsh-2.0b6.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.boofcv-ip.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/boofcv-ip-0.33.1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.boofcv-geo.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/boofcv-geo-0.33.1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.commons-math.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/commons-math-2.2.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.jfreechart.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/jfreechart-1.5.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>.clojure.</artifactId>
+			<groupId>..</groupId>
+			<scope>system</scope>
+			<version>0</version>
+			<systemPath>C:/programs/Micro-Manager-2.0gamma_20191128/plugins/Micro-Manager/clojure-1.3.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>net.haesleinhuepf</groupId>
+			<artifactId>clij_</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.clearcontrol</groupId>
+			<artifactId>clearcl</artifactId>
+			<version>0.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.clearcontrol</groupId>
+			<artifactId>coremem</artifactId>
+			<version>0.4.6</version>
+		</dependency>
+		<dependency>
+			<groupId>ome</groupId>
+			<artifactId>formats-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ome</groupId>
+			<artifactId>formats-common</artifactId>
+			<version>5.1.1</version>
+		</dependency>
+
+	</dependencies>
+</project>

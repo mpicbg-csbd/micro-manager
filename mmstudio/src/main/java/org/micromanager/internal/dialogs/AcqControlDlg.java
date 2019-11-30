@@ -167,7 +167,19 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
    public static final FileType ACQ_SETTINGS_FILE = new FileType("ACQ_SETTINGS_FILE", "Acquisition settings",
            System.getProperty("user.home") + "/AcqSettings.txt",
            true, "txt");
-   private int columnWidth_[];
+
+
+    private static final String CLIJ_POSTPROCESSING = "CLIJ_POSTPROCESSING";
+    private static final String CLIJ_DENOISE = "CLIJ_DENOISE";
+    private static final String CLIJ_DENOISE_RADIUS = "CLIJ_DENOISE_RADIUS";
+    private static final String CLIJ_UNSWEEP = "CLIJ_UNSWEEP";
+    private static final String CLIJ_UNSWEEP_ANGLE = "CLIJ_UNSWEEP_ANGLE";
+    private static final String CLIJ_UNSWEEP_TRANSLATION_X = "CLIJ_UNSWEEP_TRANSLATION_X";
+    private static final String CLIJ_SAVE_STACK = "CLIJ_SAVE_STACK";
+    private static final String CLIJ_SAVE_PROJECTION = "CLIJ_SAVE_PROJECTION";
+
+
+    private int columnWidth_[];
    private int columnOrder_[];
    private CheckBoxPanel framesPanel_;
    private JPanel defaultTimesPanel_;
@@ -764,6 +776,14 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
    JLabel clijRootLabel_;
    JTextField clijRootField_;
    JButton browseClijRootButton_;
+   JCheckBox clijDenoiseCheckbox_;
+   JCheckBox clijUnsweepCheckbox_;
+   JCheckBox clijSaveStackCheckbox_;
+   JCheckBox clijSaveProjectionCheckbox_;
+   JFormattedTextField clijDenoiseRadius_;
+   JFormattedTextField clijUnsweepAngle_;
+   JFormattedTextField clijUnsweepTranslationX_;
+
    private CheckBoxPanel createCLIJPanel() {
       clijPanel_ = createCheckBoxPanel("CLIJ Postprocessing");
       clijPanel_.setLayout(new MigLayout(PANEL_CONSTRAINT,
@@ -777,6 +797,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       clijRootField_.setFont(DEFAULT_FONT);
       clijPanel_.add(clijRootField_);
 
+      // --------------------------------------------------------------
       browseClijRootButton_ = new JButton("...");
       browseClijRootButton_.setToolTipText("Browse");
       browseClijRootButton_.setMargin(new Insets(2, 5, 2, 5));
@@ -786,8 +807,87 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       });
       clijPanel_.add(browseClijRootButton_, "wrap");
 
+      // --------------------------------------------------------------
+      clijDenoiseCheckbox_ = new JCheckBox("Denoise");
+      clijDenoiseCheckbox_.setFont(DEFAULT_FONT);
+      clijDenoiseCheckbox_.setSelected(CLIJMM.getInstance().denoiseStack);
+      clijDenoiseCheckbox_.addActionListener((final ActionEvent e) -> {
+           applySettings();
+      });
+       clijPanel_.add(clijDenoiseCheckbox_,
+               "skip 1, spanx, gaptop 0, alignx left");
+
+      // --------------------------------------------------------------
+      final JLabel denoiseRadiusLabel = new JLabel("Median radius (pixels):");
+       denoiseRadiusLabel.setFont(DEFAULT_FONT);
+       clijPanel_.add(denoiseRadiusLabel);
+
+       clijDenoiseRadius_ = new JFormattedTextField(numberFormat_);
+       clijDenoiseRadius_.setColumns(5);
+       clijDenoiseRadius_.setFont(DEFAULT_FONT);
+       clijDenoiseRadius_.setValue(1.0);
+       clijDenoiseRadius_.addPropertyChangeListener("value", this);
+       clijPanel_.add(clijDenoiseRadius_);
+       clijPanel_.add(new JLabel(""), "wrap");
 
 
+      // --------------------------------------------------------------
+      clijUnsweepCheckbox_ = new JCheckBox("Unsweep");
+      clijUnsweepCheckbox_.setFont(DEFAULT_FONT);
+      clijUnsweepCheckbox_.setSelected(CLIJMM.getInstance().unsweepStack);
+      clijUnsweepCheckbox_.addActionListener((final ActionEvent e) -> {
+           applySettings();
+      });
+       clijPanel_.add(clijUnsweepCheckbox_,
+               "skip 1, spanx, gaptop 0, alignx left");
+
+       // --------------------------------------------------------------
+       final JLabel unsweepAngleLabel = new JLabel("Unsweep angle (deg):");
+       unsweepAngleLabel.setFont(DEFAULT_FONT);
+       clijPanel_.add(unsweepAngleLabel);
+
+       clijUnsweepAngle_ = new JFormattedTextField(numberFormat_);
+       clijUnsweepAngle_.setColumns(5);
+       clijUnsweepAngle_.setFont(DEFAULT_FONT);
+       clijUnsweepAngle_.setValue(1.0);
+       clijUnsweepAngle_.addPropertyChangeListener("value", this);
+       clijPanel_.add(clijUnsweepAngle_);
+       clijPanel_.add(new JLabel(""), "wrap");
+
+       // --------------------------------------------------------------
+       final JLabel unsweepTranslationXLabel = new JLabel("Unsweep translation X (pixels):");
+       unsweepTranslationXLabel.setFont(DEFAULT_FONT);
+       clijPanel_.add(unsweepTranslationXLabel);
+
+       clijUnsweepTranslationX_ = new JFormattedTextField(numberFormat_);
+       clijUnsweepTranslationX_.setColumns(5);
+       clijUnsweepTranslationX_.setFont(DEFAULT_FONT);
+       clijUnsweepTranslationX_.setValue(1.0);
+       clijUnsweepTranslationX_.addPropertyChangeListener("value", this);
+       clijPanel_.add(clijUnsweepTranslationX_);
+       clijPanel_.add(new JLabel(""), "wrap");
+
+       // --------------------------------------------------------------
+       clijSaveStackCheckbox_ = new JCheckBox("Save stack");
+       clijSaveStackCheckbox_.setFont(DEFAULT_FONT);
+       clijSaveStackCheckbox_.setSelected(CLIJMM.getInstance().saveStackTifs);
+       clijSaveStackCheckbox_.addActionListener((final ActionEvent e) -> {
+           applySettings();
+       });
+       clijPanel_.add(clijSaveStackCheckbox_,
+               "skip 1, spanx, gaptop 0, alignx left");
+
+       // --------------------------------------------------------------
+       clijSaveProjectionCheckbox_ = new JCheckBox("Save projection");
+       clijSaveProjectionCheckbox_.setFont(DEFAULT_FONT);
+       clijSaveProjectionCheckbox_.setSelected(CLIJMM.getInstance().saveMaximumProjectionTifs);
+       clijSaveProjectionCheckbox_.addActionListener((final ActionEvent e) -> {
+           applySettings();
+       });
+       clijPanel_.add(clijSaveProjectionCheckbox_,
+               "skip 1, spanx, gaptop 0, alignx left");
+
+      // --------------------------------------------------------------
       clijPanel_.addActionListener((final ActionEvent e) -> {
          applySettings();
       });
@@ -1228,6 +1328,15 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
          columnOrder_[k] = settings.getInteger(ACQ_COLUMN_ORDER + k, k);
       }
 
+      clijPanel_.setSelected(settings.getBoolean(CLIJ_POSTPROCESSING, CLIJMM.getInstance().doCLIJPostProcessing));
+      clijDenoiseCheckbox_.setSelected(settings.getBoolean(CLIJ_DENOISE, CLIJMM.getInstance().denoiseStack));
+      clijDenoiseRadius_.setText("" + settings.getInteger(CLIJ_DENOISE_RADIUS, CLIJMM.getInstance().denoiseMedianRadius));
+      clijUnsweepCheckbox_.setSelected(settings.getBoolean(CLIJ_UNSWEEP, CLIJMM.getInstance().unsweepStack));
+      clijUnsweepAngle_.setText("" + settings.getInteger(CLIJ_UNSWEEP_ANGLE, (int) CLIJMM.getInstance().unsweepAngle));
+      clijUnsweepTranslationX_.setText("" + settings.getInteger(CLIJ_UNSWEEP_TRANSLATION_X, (int) CLIJMM.getInstance().unsweepTranslationX));
+      clijSaveStackCheckbox_.setSelected(settings.getBoolean(CLIJ_SAVE_STACK, CLIJMM.getInstance().saveStackTifs));
+      clijSaveProjectionCheckbox_.setSelected(settings.getBoolean(CLIJ_SAVE_PROJECTION, CLIJMM.getInstance().saveMaximumProjectionTifs));
+
       disableGUItoSettings_ = false;
    }
 
@@ -1302,6 +1411,18 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
          settings.putInteger(ACQ_COLUMN_WIDTH + k, findTableColumn(channelTable_, k).getWidth());
          settings.putInteger(ACQ_COLUMN_ORDER + k, channelTable_.convertColumnIndexToView(k));
       }
+
+
+       settings.putBoolean(CLIJ_POSTPROCESSING, CLIJMM.getInstance().doCLIJPostProcessing);
+       settings.putBoolean(CLIJ_DENOISE, CLIJMM.getInstance().denoiseStack);
+       settings.putInteger(CLIJ_DENOISE_RADIUS, CLIJMM.getInstance().denoiseMedianRadius);
+       settings.putBoolean(CLIJ_UNSWEEP, CLIJMM.getInstance().unsweepStack);
+       settings.putDouble(CLIJ_UNSWEEP_ANGLE, CLIJMM.getInstance().unsweepAngle);
+       settings.putDouble(CLIJ_UNSWEEP_TRANSLATION_X, CLIJMM.getInstance().unsweepTranslationX);
+       settings.putBoolean(CLIJ_SAVE_STACK, CLIJMM.getInstance().saveStackTifs);
+       settings.putBoolean(CLIJ_SAVE_PROJECTION, CLIJMM.getInstance().saveMaximumProjectionTifs);
+
+
    }
 
    // Returns the TableColumn associated with the specified column
@@ -1742,6 +1863,13 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       channelTable_.setEnabled(selected);
       channelTable_.getTableHeader().setForeground(selected ? Color.black : Color.gray);
 
+      clijDenoiseCheckbox_.setSelected(CLIJMM.getInstance().denoiseStack);
+      clijUnsweepCheckbox_.setSelected(CLIJMM.getInstance().unsweepStack);
+      clijSaveStackCheckbox_.setSelected(CLIJMM.getInstance().saveStackTifs);
+      clijSaveProjectionCheckbox_.setSelected(CLIJMM.getInstance().saveMaximumProjectionTifs);
+
+
+
       updateSavingTypeButtons();
 
       // update summary
@@ -1820,6 +1948,16 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       acqEng_.setShouldDisplayImages(!getShouldHideMDADisplay());
 
       disableGUItoSettings_ = false;
+
+      CLIJMM.getInstance().doCLIJPostProcessing = clijPanel_.isSelected();
+      CLIJMM.getInstance().denoiseStack = clijDenoiseCheckbox_.isSelected();
+      CLIJMM.getInstance().unsweepStack = clijUnsweepCheckbox_.isSelected();
+      CLIJMM.getInstance().saveStackTifs = clijSaveStackCheckbox_.isSelected();
+      CLIJMM.getInstance().saveMaximumProjectionTifs = clijSaveProjectionCheckbox_.isSelected();
+      CLIJMM.getInstance().denoiseMedianRadius = Integer.parseInt(clijDenoiseRadius_.getText());
+      CLIJMM.getInstance().unsweepAngle = Double.parseDouble(clijUnsweepAngle_.getText());
+      CLIJMM.getInstance().unsweepTranslationX = Double.parseDouble(clijUnsweepTranslationX_.getText());
+
       updateGUIContents();
    }
 

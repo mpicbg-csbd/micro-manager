@@ -171,7 +171,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
 
     private static final String CLIJ_POSTPROCESSING = "CLIJ_POSTPROCESSING";
     private static final String CLIJ_DENOISE = "CLIJ_DENOISE";
-    private static final String CLIJ_DENOISE_RADIUS = "CLIJ_DENOISE_RADIUS";
+    private static final String CLIJ_DENOISE_KERNELSIZE = "CLIJ_DENOISE_KERNELSIZE";
     private static final String CLIJ_UNSWEEP = "CLIJ_UNSWEEP";
     private static final String CLIJ_UNSWEEP_ANGLE = "CLIJ_UNSWEEP_ANGLE";
     private static final String CLIJ_UNSWEEP_TRANSLATION_X = "CLIJ_UNSWEEP_TRANSLATION_X";
@@ -780,7 +780,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
    JCheckBox clijUnsweepCheckbox_;
    JCheckBox clijSaveStackCheckbox_;
    JCheckBox clijSaveProjectionCheckbox_;
-   JFormattedTextField clijDenoiseRadius_;
+   JFormattedTextField clijDenoiseKernelSize_;
    JFormattedTextField clijUnsweepAngle_;
    JFormattedTextField clijUnsweepTranslationX_;
 
@@ -818,16 +818,16 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
                "skip 1, spanx, gaptop 0, alignx left");
 
       // --------------------------------------------------------------
-      final JLabel denoiseRadiusLabel = new JLabel("Median radius (pixels):");
+      final JLabel denoiseRadiusLabel = new JLabel("Median kernel size (pixels):");
        denoiseRadiusLabel.setFont(DEFAULT_FONT);
        clijPanel_.add(denoiseRadiusLabel);
 
-       clijDenoiseRadius_ = new JFormattedTextField(numberFormat_);
-       clijDenoiseRadius_.setColumns(5);
-       clijDenoiseRadius_.setFont(DEFAULT_FONT);
-       clijDenoiseRadius_.setValue(1.0);
-       clijDenoiseRadius_.addPropertyChangeListener("value", this);
-       clijPanel_.add(clijDenoiseRadius_);
+       clijDenoiseKernelSize_ = new JFormattedTextField(numberFormat_);
+      clijDenoiseKernelSize_.setColumns(5);
+      clijDenoiseKernelSize_.setFont(DEFAULT_FONT);
+      clijDenoiseKernelSize_.setValue(1.0);
+      clijDenoiseKernelSize_.addPropertyChangeListener("value", this);
+       clijPanel_.add(clijDenoiseKernelSize_);
        clijPanel_.add(new JLabel(""), "wrap");
 
 
@@ -1330,10 +1330,10 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
 
       clijPanel_.setSelected(settings.getBoolean(CLIJ_POSTPROCESSING, CLIJMM.getInstance().doCLIJPostProcessing));
       clijDenoiseCheckbox_.setSelected(settings.getBoolean(CLIJ_DENOISE, CLIJMM.getInstance().denoiseStack));
-      clijDenoiseRadius_.setText("" + settings.getInteger(CLIJ_DENOISE_RADIUS, CLIJMM.getInstance().denoiseMedianRadius));
+      clijDenoiseKernelSize_.setText("" + settings.getInteger(CLIJ_DENOISE_KERNELSIZE, CLIJMM.getInstance().denoiseMedianKernelSize));
       clijUnsweepCheckbox_.setSelected(settings.getBoolean(CLIJ_UNSWEEP, CLIJMM.getInstance().unsweepStack));
-      clijUnsweepAngle_.setText("" + settings.getInteger(CLIJ_UNSWEEP_ANGLE, (int) CLIJMM.getInstance().unsweepAngle));
-      clijUnsweepTranslationX_.setText("" + settings.getInteger(CLIJ_UNSWEEP_TRANSLATION_X, (int) CLIJMM.getInstance().unsweepTranslationX));
+      clijUnsweepAngle_.setText("" + settings.getDouble(CLIJ_UNSWEEP_ANGLE, CLIJMM.getInstance().unsweepAngle));
+      clijUnsweepTranslationX_.setText("" + settings.getDouble(CLIJ_UNSWEEP_TRANSLATION_X, CLIJMM.getInstance().unsweepTranslationX));
       clijSaveStackCheckbox_.setSelected(settings.getBoolean(CLIJ_SAVE_STACK, CLIJMM.getInstance().saveStackTifs));
       clijSaveProjectionCheckbox_.setSelected(settings.getBoolean(CLIJ_SAVE_PROJECTION, CLIJMM.getInstance().saveMaximumProjectionTifs));
 
@@ -1415,7 +1415,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
 
        settings.putBoolean(CLIJ_POSTPROCESSING, CLIJMM.getInstance().doCLIJPostProcessing);
        settings.putBoolean(CLIJ_DENOISE, CLIJMM.getInstance().denoiseStack);
-       settings.putInteger(CLIJ_DENOISE_RADIUS, CLIJMM.getInstance().denoiseMedianRadius);
+       settings.putInteger(CLIJ_DENOISE_KERNELSIZE, CLIJMM.getInstance().denoiseMedianKernelSize);
        settings.putBoolean(CLIJ_UNSWEEP, CLIJMM.getInstance().unsweepStack);
        settings.putDouble(CLIJ_UNSWEEP_ANGLE, CLIJMM.getInstance().unsweepAngle);
        settings.putDouble(CLIJ_UNSWEEP_TRANSLATION_X, CLIJMM.getInstance().unsweepTranslationX);
@@ -1954,7 +1954,7 @@ public final class AcqControlDlg extends MMFrame implements PropertyChangeListen
       CLIJMM.getInstance().unsweepStack = clijUnsweepCheckbox_.isSelected();
       CLIJMM.getInstance().saveStackTifs = clijSaveStackCheckbox_.isSelected();
       CLIJMM.getInstance().saveMaximumProjectionTifs = clijSaveProjectionCheckbox_.isSelected();
-      CLIJMM.getInstance().denoiseMedianRadius = Integer.parseInt(clijDenoiseRadius_.getText());
+      CLIJMM.getInstance().denoiseMedianKernelSize = Integer.parseInt(clijDenoiseKernelSize_.getText());
       CLIJMM.getInstance().unsweepAngle = Double.parseDouble(clijUnsweepAngle_.getText());
       CLIJMM.getInstance().unsweepTranslationX = Double.parseDouble(clijUnsweepTranslationX_.getText());
 

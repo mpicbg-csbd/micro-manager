@@ -2,14 +2,10 @@ package net.haesleinhuepf.clij.mm;
 
 import ij.IJ;
 import ij.ImagePlus;
-import net.haesleinhuepf.clij.CLIJ;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
-import net.haesleinhuepf.clij.converters.FallBackCLIJConverterService;
 import net.haesleinhuepf.clij.converters.implementations.ClearCLBufferToImagePlusConverter;
-import net.haesleinhuepf.clij.macro.CLIJHandler;
 import net.haesleinhuepf.clij.mm.converters.ImageToClearCLBufferConverter;
 import net.haesleinhuepf.clijx.CLIJx;
-import net.haesleinhuepf.spimcat.unsweep.Unsweep;
 import net.imglib2.realtransform.AffineTransform3D;
 import org.micromanager.acquisition.internal.AcquisitionWrapperEngine;
 import org.micromanager.acquisition.internal.MMAcquisition;
@@ -46,7 +42,7 @@ public class CLIJMM {
     private AcquisitionWrapperEngine acquistionEngine;
     public double unsweepAngle = 35;
     public double unsweepTranslationX = 0;
-    public int denoiseMedianRadius = 1;
+    public int denoiseMedianKernelSize = 3;
 
     private CLIJMM() {}
 
@@ -135,22 +131,22 @@ public class CLIJMM {
         if (debug) IJ.log("Root" + acquistionEngine.getRootName());
 
         ClearCLBuffer buffer = clijx.create(stack);
-
+        // clijx.show(stack, "original");
         if (denoiseStack) {
             denoise(clijx, stack, buffer);
-        } else {
             ClearCLBuffer temp = stack;
             stack = buffer;
             buffer = temp;
         }
+        // clijx.show(stack, "denoised");
 
         if (unsweepStack) {
             unsweep(clijx, stack, buffer);
-        } else {
             ClearCLBuffer temp = stack;
             stack = buffer;
             buffer = temp;
         }
+        // clijx.show(stack, "unswept");
         if (saveStackTifs) saveStack(clijx, stack, timepoint);
         if (saveMaximumProjectionTifs) saveProjection(clijx, stack, timepoint);
 
@@ -166,7 +162,7 @@ public class CLIJMM {
 
     private void denoise(CLIJx clijx, ClearCLBuffer stack, ClearCLBuffer buffer) {
         if (debug) IJ.log("denoise");
-        clijx.medianSliceBySliceSphere(stack, buffer, denoiseMedianRadius, denoiseMedianRadius);
+        clijx.medianSliceBySliceSphere(stack, buffer, denoiseMedianKernelSize, denoiseMedianKernelSize);
         if (debug) IJ.log("denoised");
     }
 
@@ -195,7 +191,7 @@ public class CLIJMM {
         clijx.affineTransform3D(input, output, at);
 
         //Unsweep.unsweep(clijx.getClij(), stack, buffer, (float)unsweepAngle, (int)unsweepTranslationX);
-        if (debug) IJ.log("unsweept");
+        if (debug) IJ.log("unswept");
     }
 
     private void saveStack(CLIJx clijx, ClearCLBuffer stack, long timepoint) {

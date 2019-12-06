@@ -73,7 +73,7 @@ public class CLIJMM {
 
     }
 
-    public void imageArrived(DataProvider provider) {
+    public void imageArrived(Image image) {
         if (!doCLIJPostProcessing) {
             return;
         }
@@ -81,30 +81,14 @@ public class CLIJMM {
 
         if (debug) IJ.log("Image arrived: " + (imageCounter) + "/" + numberOfImagesPerStack);
 
-        long imageNumber = provider.getNumImages();
-        try {
-            Image image = provider.getAnyImage();
+        CLIJx clijx = CLIJx.getInstance();
+        ImageToClearCLBufferConverter converter = new ImageToClearCLBufferConverter();
+        converter.setCLIJ(clijx.getClij());
+        ClearCLBuffer buffer = converter.convert(image);
+        collect(clijx, buffer, imageCounter, numberOfImagesPerStack, image.getMetadata());
+        buffer.close();
 
-            //IJ.log("image: " + image);
-            //IJ.log("imagec.class: " + image.getClass());
-
-            //IJ.log("image z: " + image.getMetadata().getZPositionUm());
-
-            CLIJx clijx = CLIJx.getInstance();
-            ImageToClearCLBufferConverter converter = new ImageToClearCLBufferConverter();
-            converter.setCLIJ(clijx.getClij());
-            ClearCLBuffer buffer = converter.convert(image);
-            collect(clijx, buffer, imageCounter, numberOfImagesPerStack, image.getMetadata());
-            buffer.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            IJ.log(e.getMessage());
-        }
         imageCounter++;
-
-
-
     }
 
     private ClearCLBuffer stack = null;
@@ -183,7 +167,7 @@ public class CLIJMM {
         shearTransform.set(1.0D, 0, 0);
         shearTransform.set(1.0D, 1, 1);
         shearTransform.set(1.0D, 2, 2);
-        shearTransform.set(-shear, 0, 2);
+        shearTransform.set(-shear, 2, 0);
         at.concatenate(shearTransform);
 
         if (debug) IJ.log("unsweep 4 ");

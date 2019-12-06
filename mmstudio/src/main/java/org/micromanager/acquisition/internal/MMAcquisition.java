@@ -446,9 +446,10 @@ public final class MMAcquisition extends DataViewerListener {
    public void onNewImage(DataProviderHasNewImageEvent event) {
       imagesReceived_++;
       setProgressText();
+
       IJ.log("event: " + event);
       CLIJMM.getInstance().setAcquisition(this);
-      CLIJMM.getInstance().imageArrived(event.getDataProvider());
+      CLIJMM.getInstance().imageArrived(event.getImage());
    }
    
    @Subscribe

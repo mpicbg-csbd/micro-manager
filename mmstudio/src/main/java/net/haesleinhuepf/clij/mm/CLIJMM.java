@@ -74,6 +74,7 @@ public class CLIJMM {
     }
 
     public void imageArrived(Image image) {
+        long timeStamp = System.currentTimeMillis();
         if (!doCLIJPostProcessing) {
             return;
         }
@@ -88,20 +89,26 @@ public class CLIJMM {
         collect(clijx, buffer, imageCounter, numberOfImagesPerStack, image.getMetadata());
         buffer.close();
 
+        if (debug) IJ.log("Processing took " + (System.currentTimeMillis() - timeStamp) + " ms");
         imageCounter++;
     }
 
     private ClearCLBuffer stack = null;
     private void collect(CLIJx clijx, ClearCLBuffer buffer, long imageCounter, long numberOfImagesPerStack, Metadata metadata) {
         if (debug) IJ.log("Collecting " + buffer);
+        //if (debug) IJ.log("Position " + metadata.getZPositionUm());
 
         if (stack == null) {
-            stack = clijx.create(new long[]{buffer.getWidth(), buffer.getHeight(), numberOfImagesPerStack}, buffer.getNativeType());
+            stack = clijx.create(new long[]{buffer.getHeight(), buffer.getWidth(), numberOfImagesPerStack}, buffer.getNativeType());
         }
-        if (debug) IJ.log("Stack " + stack);
+        //if (debug) IJ.log("Stack " + stack);
+        //if (debug) IJ.log("Slice position " + imageCounter);
 
-        clijx.copySlice(buffer, stack, (int)(imageCounter % numberOfImagesPerStack));
-        if (debug) IJ.log("Copied " + stack);
+        ClearCLBuffer rotationBuffer = clijx.create(new long[]{buffer.getHeight(), buffer.getWidth()}, buffer.getNativeType());
+        clijx.rotateLeft(buffer, rotationBuffer);
+        clijx.copySlice(rotationBuffer, stack, (int)(imageCounter % numberOfImagesPerStack));
+        rotationBuffer.close();
+        //if (debug) IJ.log("Copied " + stack);
 
         if ((imageCounter + 1) % numberOfImagesPerStack == 0 && imageCounter > 0) {
             // end of stack reached
@@ -114,32 +121,32 @@ public class CLIJMM {
     private void processStack(CLIJx clijx, ClearCLBuffer stack, long timepoint) {
         if (debug) IJ.log("Root" + acquistionEngine.getRootName());
 
-        ClearCLBuffer buffer = clijx.create(stack);
+        ClearCLBuffer stack2 = clijx.create(stack);
         // clijx.show(stack, "original");
         if (denoiseStack) {
-            denoise(clijx, stack, buffer);
+            denoise(clijx, stack, stack2);
             ClearCLBuffer temp = stack;
-            stack = buffer;
-            buffer = temp;
+            stack = stack2;
+            stack2 = temp;
         }
         // clijx.show(stack, "denoised");
 
         if (unsweepStack) {
-            unsweep(clijx, stack, buffer);
+            unsweep(clijx, stack, stack2);
             ClearCLBuffer temp = stack;
-            stack = buffer;
-            buffer = temp;
+            stack = stack2;
+            stack2 = temp;
         }
         // clijx.show(stack, "unswept");
         if (saveStackTifs) saveStack(clijx, stack, timepoint);
         if (saveMaximumProjectionTifs) saveProjection(clijx, stack, timepoint);
 
         // cleanup
-        if (buffer != null) {
-            if (buffer == this.stack) {
+        if (stack2 != null) {
+            if (stack2 == this.stack) {
                 clijx.release(stack);
             } else {
-                clijx.release(buffer);
+                clijx.release(stack2);
             }
         }
     }
@@ -170,7 +177,10 @@ public class CLIJMM {
         shearTransform.set(-shear, 2, 0);
         at.concatenate(shearTransform);
 
-        if (debug) IJ.log("unsweep 4 ");
+        //at.rotate(2, 90.0 / 180 * Math.PI);
+
+        if (debug) IJ.log("unsweep 4 hello world");
+
 
         clijx.affineTransform3D(input, output, at);
 
